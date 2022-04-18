@@ -26,6 +26,11 @@ import org.koin.android.ext.android.inject
 import java.lang.Exception
 
 internal class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>() {
+
+    companion object {
+        const val TAG = "ProfileFragment"
+    }
+
     override val viewModel by inject<ProfileViewModel>()
 
     override fun getViewBinding(): FragmentProfileBinding =
@@ -84,6 +89,11 @@ internal class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileB
 
     private fun initViews() = with(binding) {
         Log.d("initViews","프로필")
+        recyclerView.adapter=adapter
+        val gridLayoutManager = GridLayoutManager(activity,2)
+        recyclerView.layoutManager = gridLayoutManager
+        Log.d("어댑터 초기화","프로필")
+
         loginButton.setOnClickListener {
             signInGoogle()
         }
@@ -106,14 +116,11 @@ internal class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileB
         Log.d("Loading","프로필")
         progressBar.isVisible = true
         loginRequiredGroup.isGone = true
-        Log.d("어댑터 초기화","프로필")
+
     }
 
     private fun handleLoginState(state: ProfileState.Login) = with(binding){
         Log.d("Login","프로필")
-        recyclerView.adapter=adapter
-        val gridLayoutManager = GridLayoutManager(activity,2)
-        recyclerView.layoutManager = gridLayoutManager
         Log.d("아이디 토큰",state.idToken)
         val credential = GoogleAuthProvider.getCredential(state.idToken,null)
         firebaseAuth.signInWithCredential(credential)

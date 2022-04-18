@@ -159,8 +159,7 @@ class PreferenceManager(
         editor.apply()
     }
 
-    suspend fun getIdToken(): String? {
-        delay(10)
+    fun getIdToken(): String? {
         return prefs.getString(KEY_ID_TOKEN, null)
     }
 

@@ -22,6 +22,11 @@ import org.koin.android.ext.android.inject
 
 internal class ProductListFragment :
     BaseFragment<ProductListViewModel, FragmentProductListBinding>() {
+
+    companion object {
+        const val TAG = "ProductListFragment"
+    }
+
     override val viewModel by inject<ProductListViewModel>()
 
     override fun getViewBinding(): FragmentProductListBinding =
@@ -33,9 +38,11 @@ internal class ProductListFragment :
     }
     private val startProductDetailResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK){
-                viewModel.fetchData()
+            Log.d("result",result.toString())
+            if (result.resultCode == ProductDetailActivity.PRODUCT_ORDER_RESULT_CODE){
                 (requireActivity() as MainActivity).viewModel.refreshOrderList()
+            } else{
+                Log.d("result_code","코드가 다름")
             }
 
         }
@@ -59,6 +66,10 @@ internal class ProductListFragment :
 
     private fun initViews(binding: FragmentProductListBinding) = with(binding) {
         Log.d("initViews","리스트")
+        recyclerView.adapter = adapter
+        val gridLayoutManager = GridLayoutManager(activity,2)
+        recyclerView.layoutManager = gridLayoutManager
+        Log.d("어댑터 초기화","어댑터 초기화")
         refreshLayout.setOnRefreshListener {
             viewModel.fetchData()
         }
@@ -72,10 +83,6 @@ internal class ProductListFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     private fun handleSuccessState(state: ProductListState.Success) = with(binding) {
-        recyclerView.adapter = adapter
-        val gridLayoutManager = GridLayoutManager(activity,2)
-        recyclerView.layoutManager = gridLayoutManager
-        Log.d("어댑터 초기화","어댑터 초기화")
 
         Log.d("Success","리스트")
         refreshLayout.isRefreshing = false

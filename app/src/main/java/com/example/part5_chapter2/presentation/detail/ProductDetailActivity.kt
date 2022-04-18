@@ -85,6 +85,7 @@ internal class ProductDetailActivity :
 
     private fun handleOrder() {
         toast("성공적으로 주문이 완료되었습니다.")
+        setResult(PRODUCT_ORDER_RESULT_CODE)
         finish()
     }
 
